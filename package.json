@@ -2,9 +2,6 @@
   "name": "react-os",
   "version": "0.14.0",
   "description": "ReactJS UI Framework to build Operating Systems like applications",
-  "scripts": {
-      "build": "gulp build"
-  },
   "main": "index.js",
   "repository": {
     "type": "git",
