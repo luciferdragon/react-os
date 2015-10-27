@@ -21,7 +21,11 @@
   },
   "homepage": "https://github.com/uditalias/react-os#readme",
   "scripts": {
-    "build": "babel-node cli/build-cli.js"
+    "build": "babel-node cli/build-cli.js",
+    "release": "release"
+  },
+  "release-script": {
+      "bowerRepo": "git@github.com:uditalias/react-os-bower.git"
   },
   "dependencies": {},
   "files": [
@@ -54,6 +58,7 @@
     "node-sass": "^3.4.0",
     "output-file-sync": "^1.1.1",
     "react": "0.13.3",
+    "release-script": "^0.5.4",
     "rimraf": "^2.4.3",
     "sass-loader": "^3.1.1",
     "style-loader": "^0.13.0",
