@@ -41,8 +41,8 @@
     "ui"
   ],
   "peerDependencies": {
-    "react": ">=0.13.3",
-    "react-dom": ">=0.13.3"
+    "react": ">=0.14.0",
+    "react-dom": ">=0.14.0"
   },
   "devDependencies": {
     "babel": "^5.8.29",
@@ -57,7 +57,7 @@
     "lodash": "^3.10.1",
     "node-sass": "^3.4.0",
     "output-file-sync": "^1.1.1",
-    "react": "0.13.3",
+    "react": "^0.14.0",
     "release-script": "^0.5.4",
     "rimraf": "^2.4.3",
     "sass-loader": "^3.1.1",
