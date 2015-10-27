@@ -10,3 +10,4 @@ dist/
 !cli/dist/
 .babel-cache/
 .coverage/
+tmp-bower-repo/
