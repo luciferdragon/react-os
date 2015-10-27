@@ -1,2 +1,12 @@
+.DS_Store
+npm-debug.log*
 .idea/
 node_modules/
+amd/
+!cli/amd/
+lib/
+!cli/lib/
+dist/
+!cli/dist/
+.babel-cache/
+.coverage/
