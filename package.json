@@ -25,7 +25,6 @@
     "release": "release"
   },
   "release-script": {
-    "skipBuildStep": "true",
     "bowerRepo": "git@github.com:uditalias/react-os-bower.git"
   },
   "dependencies": {},
