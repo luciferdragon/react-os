@@ -1,6 +1,18 @@
-var path = require('path');
+var path = require('path'),
+webpack = require('webpack'),
+yargs = require('yargs'),
+ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = {
+var options = yargs
+.alias('p', 'optimize-minimize')
+.alias('d', 'debug')
+.option('port', {
+    default: '8080',
+    type: 'string'
+})
+.argv;
+
+var config = {
     context: path.resolve(__dirname, '../src'),
 
     entry: {
@@ -9,7 +21,7 @@ module.exports = {
 
     output: {
         path: './dist',
-        filename: '[name].js',
+        filename: options.optimizeMinimize ? '[name].min.js' : '[name].js',
         library: 'ReactOS',
         libraryTarget: 'umd'
     },
@@ -17,11 +29,20 @@ module.exports = {
     module: {
         loaders: [
             {test: /\.js$/, loader: 'babel', exclude: /node_modules/},
-            {test: /\.scss$/, loaders: ['style', 'css', 'sass']}
+            {test: /\.scss$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader?sourceMap!sass-loader")}
         ]
     },
 
-    plugins: [],
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify(options.optimizeMinimize ? 'production' : 'development')
+            }
+        }),
+        new ExtractTextPlugin("react-os.css", {
+            allChunks: true
+        })
+    ],
 
     externals: [
         {
@@ -42,3 +63,9 @@ module.exports = {
         }
     ]
 };
+
+if (options.optimizeMinimize) {
+    config.devtool = 'source-map';
+}
+
+module.exports = config;

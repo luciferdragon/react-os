@@ -1,0 +1,6 @@
+{
+	"stage": 1,
+	"sourceRoot": "./src",
+	"moduleRoot": "./lib",
+	"loose": ["all"]
+}

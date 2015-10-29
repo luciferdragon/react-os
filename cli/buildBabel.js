@@ -7,7 +7,9 @@ import outputFileSync from 'output-file-sync';
 export function buildContent(content, filename, destination, babelOptions = {}) {
   babelOptions.filename = filename;
   const result = transform(content, babelOptions);
-  outputFileSync(destination, result.code, {encoding: 'utf8'});
+  if(!result.ignored) {
+      outputFileSync(destination, result.code, {encoding: 'utf8'});
+  }
 }
 
 export function buildFile(filename, destination, babelOptions = {}) {

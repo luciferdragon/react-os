@@ -1,0 +1,60 @@
+.ros-menuitem {
+
+    &.root {
+        &.open {
+            .content > .title {
+                background: $color-darker-gray;
+            }
+        }
+
+        .content > .items {
+            border-radius: 0 0 $radius $radius;
+        }
+    }
+
+    .content {
+        position: relative;
+
+        &:hover {
+            > .title {
+                background: $color-darker-gray;
+            }
+        }
+
+        .title {
+            padding: 5px 10px;
+            color: $color-alt-white;
+            cursor: pointer;
+        }
+
+        .items {
+            background: $color-darker-gray;
+            display: none;
+            position: absolute;
+            white-space: nowrap;
+            box-shadow: 0 5px 20px rgba(0,0,0,.5);
+
+            &.open {
+                display: block;
+            }
+
+            .ros-menuitem {
+                min-width: 160px;
+
+                .content {
+                    &:hover {
+                        > .title {
+                            background: $color-dark-gray;
+                            color: $color-white;
+                        }
+                    }
+
+                    .items {
+                        top: 0;
+                        left: 100%;
+                    }
+                }
+            }
+        }
+    }
+}

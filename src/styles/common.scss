@@ -1,0 +1,30 @@
+* {
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+html, body, #ros {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    overflow: hidden;
+}
+
+.top {
+    top: 0;
+}
+
+.left {
+    right: 100%;
+}
+
+.bottom {
+    bottom: 0;
+}
+
+.right {
+    left: 100%;
+}
