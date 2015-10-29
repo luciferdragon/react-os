@@ -1,6 +1,6 @@
 {
   "name": "react-os",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "ReactJS UI Framework to build Operating Systems like applications",
   "main": "lib/index.js",
   "directories": {
