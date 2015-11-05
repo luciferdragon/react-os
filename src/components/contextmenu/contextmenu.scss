@@ -1,3 +1,97 @@
 .ros-contextmenu {
-    
+    position: fixed;
+    min-width: 160px;
+    border-radius: $radius;
+    background: $color-darker-gray;
+    border-bottom: solid 1px lighten($color-darker-gray, 2%);
+    z-index: 2147483640;
+
+    &.shadow {
+        box-shadow: 0 5px 20px rgba(0,0,0,.5);
+    }
+
+    .ros-menuitem {
+        > .content > .title > .icon {
+            width: auto !important;
+        }
+
+        > .content > .title:hover {
+            background: $color-dark-gray;
+        }
+
+        > .content:hover > .title {
+            background: $color-dark-gray;
+        }
+
+        &:first-child > .content > .title {
+            border-radius: $radius $radius 0 0;
+        }
+
+        &:last-child > .content > .title {
+            border-radius: 0 0 $radius $radius;
+        }
+
+        &:only-child > .content > .title {
+            border-radius: $radius $radius $radius $radius !important;
+        }
+
+        .items {
+
+            &.top.left {
+                top: 0;
+                right: 100%;
+                border-radius: $radius 0 $radius $radius;
+
+                .ros-menuitem:first-child > .content > .title {
+                    border-radius: $radius 0 0 0;
+                }
+
+                .ros-menuitem:last-child > .content > .title {
+                    border-radius: 0 0 $radius $radius;
+                }
+            }
+
+            &.top.right {
+                top: 0;
+                left: 100%;
+                border-radius: 0 $radius $radius $radius;
+
+                > .ros-menuitem:first-child > .content > .title {
+                    border-radius: 0 $radius 0 0;
+                }
+
+                > .ros-menuitem:last-child > .content > .title {
+                    border-radius: 0 0 $radius $radius;
+                }
+            }
+
+            &.bottom.left {
+                bottom: 0;
+                right: 100%;
+                border-radius: $radius $radius 0 $radius;
+
+                > .ros-menuitem:first-child > .content > .title {
+                    border-radius: $radius $radius 0 0;
+                }
+
+                > .ros-menuitem:last-child > .content > .title {
+                    border-radius: 0 0 0 $radius;
+                }
+            }
+
+            &.bottom.right {
+                bottom: 0;
+                left: 100%;
+                border-radius: $radius $radius $radius 0;
+
+                > .ros-menuitem:first-child > .content > .title {
+                    border-radius: $radius $radius 0 0;
+                }
+
+                > .ros-menuitem:last-child > .content > .title {
+                    border-radius: 0 0 $radius 0;
+                }
+            }
+        }
+    }
 }

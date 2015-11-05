@@ -6,6 +6,22 @@
   position: relative;
 }
 
+.top {
+    top: 0;
+}
+
+.left {
+    right: 100%;
+}
+
+.bottom {
+    bottom: 0;
+}
+
+.right {
+    left: 100%;
+}
+
 .overflow-hidden {
   overflow: hidden;
 }

@@ -1,16 +1,16 @@
 var path = require('path'),
-webpack = require('webpack'),
-yargs = require('yargs'),
-ExtractTextPlugin = require("extract-text-webpack-plugin");
+    webpack = require('webpack'),
+    yargs = require('yargs'),
+    ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var options = yargs
-.alias('p', 'optimize-minimize')
-.alias('d', 'debug')
-.option('port', {
-    default: '8080',
-    type: 'string'
-})
-.argv;
+    .alias('p', 'optimize-minimize')
+    .alias('d', 'debug')
+    .option('port', {
+        default: '8080',
+        type: 'string'
+    })
+    .argv;
 
 var config = {
     context: path.resolve(__dirname, '../src'),

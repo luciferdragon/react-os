@@ -1,3 +1,18 @@
 .ros-menutree {
-    
+    .ros-menuitem {
+        &.root {
+            .content > .items {
+                background: $color-darker-gray;
+                border-radius: 0 0 $radius $radius;
+            }
+
+            > .content > .title > .icon {
+                width: auto !important;
+            }
+
+            > .content > .title:hover {
+                background: $color-darker-gray;
+            }
+        }
+    }
 }

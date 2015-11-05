@@ -1,0 +1,23 @@
+.ros-icons-grid {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  .grid-holder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .ros-icon-wrapper {
+      position: absolute;
+
+      &.animated {
+        transition: bottom 200ms, left 200ms;
+      }
+    }
+  }
+}

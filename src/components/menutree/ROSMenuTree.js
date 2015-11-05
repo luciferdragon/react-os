@@ -1,8 +1,21 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import Layouts from '../../constants/layouts';
 
 var ROSMenuTree = React.createClass({
+    childContextTypes: {
+        parentNode: React.PropTypes.object,
+        parentRoot: React.PropTypes.bool
+    },
+
+    getChildContext: function() {
+        return {
+            parentNode: this,
+            parentRoot: true
+        }
+    },
+
     getDefaultProps() {
         return {
             layout: Layouts.HORIZONTAL
@@ -13,14 +26,22 @@ var ROSMenuTree = React.createClass({
         layout: React.PropTypes.string
     },
 
-    render() {
-        var classes = classNames('ros-menutree', {
-            'horizontal flex': this.props.layout == Layouts.HORIZONTAL,
-            'vertical flex flex-vbox': this.props.layout == Layouts.VERTICAL
+    getStyle() {
+        let menuTree = classNames("ros-menutree flex", {
+            'horizontal': this.props.layout == Layouts.HORIZONTAL,
+            'vertical flex-vbox': this.props.layout == Layouts.VERTICAL
         });
 
+        return {
+            menuTree
+        }
+    },
+
+    render() {
+        var classes = this.getStyle();
+
         return (
-            <div className={classes}>
+            <div className={classes.menuTree}>
                 {this.props.children}
             </div>
         );

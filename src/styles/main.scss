@@ -6,15 +6,17 @@
 @import './mixins';
 @import './framework.scss';
 @import './common.scss';
-
+@import './animations.scss';
 /*
  *  COMPONENTS
  */
- @import '../components/application/application';
- @import '../components/button/button';
- @import '../components/contextmenu/contextmenu';
- @import '../components/desktop/desktop';
- @import '../components/menutree/menuitem';
- @import '../components/menutree/menutree';
- @import '../components/toolbar/toolbar';
- @import '../components/window/window';
+@import '../components/application/application';
+@import '../components/button/button';
+@import '../components/contextmenu/contextmenu';
+@import '../components/desktop/desktop';
+@import '../components/icon/icon';
+@import '../components/iconsgrid/iconsgrid';
+@import '../components/menuitem/menuitem';
+@import '../components/menutree/menutree';
+@import '../components/toolbar/toolbar';
+@import '../components/window/window';

@@ -1,6 +1,10 @@
 import React from 'react';
 
 var ROSApplication = React.createClass({
+    contextTypes: {
+        rosTheme: React.PropTypes.object
+    },
+
     childContextTypes: {
         rosTheme: React.PropTypes.object
     },

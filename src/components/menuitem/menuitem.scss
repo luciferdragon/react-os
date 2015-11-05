@@ -1,0 +1,129 @@
+.ros-menuitem {
+    text-align: left;
+
+    &.open {
+        > .content > .title {
+            background: $color-darker-gray;
+        }
+    }
+
+    .content {
+        position: relative;
+
+        .title {
+            padding: 5px 10px;
+            color: $color-alt-white;
+            cursor: pointer;
+
+            &.disabled {
+                color: lighten($color-darker-gray, 25%);
+                text-shadow: 0 -1px 0px rgba(0,0,0,.5);
+            }
+
+            .icon {
+                text-align: center;
+                margin-right: 3px;
+                width: 18px;
+                font-size: 14px;
+            }
+        }
+
+        .items {
+            background: $color-darker-gray;
+            display: none;
+            position: absolute;
+            z-index: 10;
+            white-space: nowrap;
+            box-shadow: 0 5px 20px rgba(0,0,0,.5);
+            border-bottom: solid 1px lighten($color-darker-gray, 2%);
+
+            .ros-menuitem:first-child > .content > .title {
+                border-radius: 0;
+            }
+
+            .ros-menuitem:last-child > .content > .title {
+                border-radius: 0 0 $radius $radius;
+            }
+
+            &.open {
+                display: block;
+            }
+
+            .ros-menuitem {
+                min-width: 160px;
+
+                .content {
+                    &:hover {
+                        > .title:not(.disabled) {
+                            background: $color-dark-gray;
+                            color: $color-white;
+                        }
+                    }
+
+                    .title.focus {
+                        background: $color-dark-gray;
+                        color: $color-white;
+                    }
+
+                    .items {
+                        &.top.left {
+                            top: 0;
+                            right: 100%;
+                            border-radius: $radius 0 $radius $radius;
+
+                            .ros-menuitem:first-child > .content > .title {
+                                border-radius: $radius 0 0 0;
+                            }
+
+                            .ros-menuitem:last-child > .content > .title {
+                                border-radius: 0 0 $radius $radius;
+                            }
+                        }
+
+                        &.top.right {
+                            top: 0;
+                            left: 100%;
+                            border-radius: 0 $radius $radius $radius;
+
+                            > .ros-menuitem:first-child > .content > .title {
+                                border-radius: 0 $radius 0 0;
+                            }
+
+                            > .ros-menuitem:last-child > .content > .title {
+                                border-radius: 0 0 $radius $radius;
+                            }
+                        }
+
+                        &.bottom.left {
+                            bottom: 0;
+                            right: 100%;
+                            border-radius: $radius $radius 0 $radius;
+
+                            > .ros-menuitem:first-child > .content > .title {
+                                border-radius: $radius $radius 0 0;
+                            }
+
+                            > .ros-menuitem:last-child > .content > .title {
+                                border-radius: 0 0 0 $radius;
+                            }
+                        }
+
+                        &.bottom.right {
+                            bottom: 0;
+                            left: 100%;
+                            border-radius: $radius $radius $radius 0;
+
+                            > .ros-menuitem:first-child > .content > .title {
+                                border-radius: $radius $radius 0 0;
+                            }
+
+                            > .ros-menuitem:last-child > .content > .title {
+                                border-radius: 0 0 $radius 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
