@@ -14,10 +14,6 @@
 
     .ros-icon-wrapper {
       position: absolute;
-
-      &.animated {
-        transition: bottom 200ms, left 200ms;
-      }
     }
   }
 }

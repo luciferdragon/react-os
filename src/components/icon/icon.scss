@@ -30,7 +30,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    user-select: none;
-    -webkit-user-select: none;
+    @include user-select(none);
   }
 }
