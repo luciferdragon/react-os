@@ -23,15 +23,24 @@ export default (WrappedComponent, options, props) => {
             }
         },
 
-        componentDidMount() {
+        getHandlerNode() {
             var node = ReactDOM.findDOMNode(this.refs.wrappedComp);
+            if(options.handler) {
+                node = node.querySelector(options.handler);
+            }
+            return node;
+        },
+
+        componentDidMount() {
+            var node = this.getHandlerNode();
+
             node.addEventListener('mousedown', this.onNodeMouseDown);
 
             options.containerNode = options.containerNode || node.parentNode;
         },
 
         componentWillUnmount() {
-            var node = ReactDOM.findDOMNode(this.refs.wrappedComp);
+            var node = this.getHandlerNode();
             node.removeEventListener('mousedown', this.onNodeMouseDown);
         },
 
@@ -59,7 +68,7 @@ export default (WrappedComponent, options, props) => {
             var left = (event.x - options.containerNode.getBoundingClientRect().left) - this.state.mouseDownLeftGap;
             var top = (event.y - options.containerNode.getBoundingClientRect().top) - this.state.mouseDownTopGap;
 
-            var node = ReactDOM.findDOMNode(this.refs.wrappedComp);
+            var node = this.getHandlerNode();
             var nodeRect = node.getBoundingClientRect();
             var containerRect = options.containerNode.getBoundingClientRect();
 

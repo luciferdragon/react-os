@@ -139,7 +139,6 @@ var ROSIconsGrid = React.createClass({
                 let position = this.getWrapperPositionByIndex(idx, child);
                 let options = {
                     containerNode: this.refs.grid
-                    //handler: ...
                 };
 
                 let Draggable = draggableConnector(ROSIconWrapper, options, {
