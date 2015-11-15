@@ -5,11 +5,12 @@ import postal from 'postal';
 import classNames from 'classnames';
 import ROSContextMenu from '../contextmenu/ROSContextMenu';
 import ROSMenuItem from '../menuitem/ROSMenuItem';
+import draggableConnector from '../../compositions/draggableConnector';
 
 var ROSIcon = React.createClass({
     contextTypes: {
-        width: React.PropTypes.number,
-        height: React.PropTypes.number
+        requestNextZIndex: React.PropTypes.func,
+        requestGridPosition: React.PropTypes.func
     },
 
     propTypes: {
@@ -17,7 +18,10 @@ var ROSIcon = React.createClass({
         title: React.PropTypes.string,
         action: React.PropTypes.func.isRequired,
         onDelete: React.PropTypes.func,
-        onNameChanged: React.PropTypes.func
+        onNameChanged: React.PropTypes.func,
+        width: React.PropTypes.number,
+        height: React.PropTypes.number,
+        index: React.PropTypes.number
     },
 
     getDefaultProps() {
@@ -25,14 +29,18 @@ var ROSIcon = React.createClass({
             iconClass: 'fa fa-file',
             title: 'New',
             onDelete: null,
-            onNameChanged: null
+            onNameChanged: null,
+            width: 96,
+            height: 96,
+            index: 0
         }
     },
 
     getInitialState() {
         return {
             focus: false,
-            rename: false
+            rename: false,
+            zIndex: 1
         }
     },
 
@@ -41,10 +49,16 @@ var ROSIcon = React.createClass({
             return (
                 <ROSContextMenu>
                     {this.props.onDelete && <ROSMenuItem action={this.props.onDelete} title={'Delete'}/>}
-                    {this.props.onNameChanged && <ROSMenuItem action={this.props.onNameChanged} title={'Rename...'}/>}
+                    {this.props.onNameChanged && <ROSMenuItem action={this.onRenameClick} title={'Rename...'}/>}
                 </ROSContextMenu>
             );
         }
+    },
+
+    onRenameClick() {
+        this.setState({
+            rename: true
+        });
     },
 
     onDocumentClick() {
@@ -59,13 +73,13 @@ var ROSIcon = React.createClass({
 
     onIconFocusBusEvent(event){
         let node = ReactDOM.findDOMNode(this);
-        if(event.id != node.dataset.reactid) {
+        if (event.id != node.dataset.reactid) {
             this.setState(this.getInitialState());
         }
     },
 
     subscribeBusEvents() {
-        this.subscription = postal.subscribe({
+        this.focusBusHandler = postal.subscribe({
             channel: 'icon',
             topic: 'state.focus',
             callback: this.onIconFocusBusEvent
@@ -73,7 +87,7 @@ var ROSIcon = React.createClass({
     },
 
     unsubscribeBusEvents() {
-        this.subscription.unsubscribe();
+        this.focusBusHandler.unsubscribe();
     },
 
     componentDidMount() {
@@ -110,6 +124,17 @@ var ROSIcon = React.createClass({
         });
     },
 
+    updateZIndex() {
+        this.setState({
+            zIndex: this.context.requestNextZIndex(this.state.zIndex)
+        });
+    },
+
+    onRenameInputClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    },
+
     getStyle() {
         let icon = classNames('ros-icon text-center flex flex-vbox flex-align-center', {
             'focus': this.state.focus
@@ -117,14 +142,30 @@ var ROSIcon = React.createClass({
 
         let element = classNames('element margin-bottom-5');
 
-        let title = classNames('title');
+        let title = classNames('title', {
+            'rename': this.state.rename
+        });
 
         let elementStyle = {
-            fontSize: this.context.width / 2
+            fontSize: this.props.width / 2
         };
 
-        let titleStyle = {
-            width: this.state.focus ? 'auto' : this.context.width
+        let position = this.context.requestGridPosition(this.props.position);
+
+        let wrapperStyle = {
+            width: this.props.width,
+            height: this.props.height,
+            top: position.top,
+            left: position.left,
+            zIndex: this.state.zIndex
+        };
+
+        let titleTextStyle = {
+            width: this.state.focus ? 'auto' : this.props.width
+        };
+
+        let titleRenameStyle = {
+            display: this.state.rename ? 'block' : 'none'
         };
 
         return {
@@ -132,7 +173,9 @@ var ROSIcon = React.createClass({
             element,
             title,
             elementStyle,
-            titleStyle
+            wrapperStyle,
+            titleTextStyle,
+            titleRenameStyle
         }
     },
 
@@ -140,17 +183,27 @@ var ROSIcon = React.createClass({
         let classes = this.getStyle();
 
         return (
-            <div className={classes.icon} onClick={this.onIconClick} onDoubleClick={this.onIconDoubleClick}>
-                {this.getContextMenu()}
-                <div className={classes.element} style={classes.elementStyle}>
-                    <i className={this.props.iconClass}></i>
-                </div>
-                <div className={classes.title} style={classes.titleStyle}>
-                    {this.props.title}
+            <div className="ros-icon-wrapper flex flex-align-start flex-pack-center"
+                 style={classes.wrapperStyle}
+                 onMouseDown={this.updateZIndex}
+                 onContextMenu={this.updateZIndex}>
+                <div className={classes.icon} onClick={this.onIconClick} onDoubleClick={this.onIconDoubleClick}>
+                    {this.getContextMenu()}
+                    <div className={classes.element} style={classes.elementStyle}>
+                        <i className={this.props.iconClass}></i>
+                    </div>
+                    <div className={classes.title}>
+                        <div className="title-text" style={classes.titleTextStyle}>
+                            {this.props.title}
+                        </div>
+                        <div className="title-rename" style={classes.titleRenameStyle}>
+                            <input type="text" defaultValue={this.props.title} onClick={this.onRenameInputClick}/>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
 });
 
-export default ROSIcon;
+export default draggableConnector(ROSIcon);

@@ -1,33 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
-import ROSIconWrapper from './ROSIconWrapper';
+import ROSIcon from '../icon/ROSIcon';
 import utils from '../../utils';
 import draggableConnector from '../../compositions/draggableConnector';
-import droppableConnector from '../../compositions/droppableConnector';
 
 var ROSIconsGrid = React.createClass({
     childContextTypes: {
-        requestNextZIndex: React.PropTypes.func
+        requestNextZIndex: React.PropTypes.func,
+        requestGridPosition: React.PropTypes.func
     },
 
     getChildContext() {
         return {
-            requestNextZIndex: this.responseNextZIndex
+            requestNextZIndex: this.getNextZIndex,
+            requestGridPosition: this.getIconGridPosition
         }
     },
 
     propTypes: {
-        iconWidth: React.PropTypes.number,
-        iconHeight: React.PropTypes.number,
+        iconSize: React.PropTypes.number,
         containerCornersGap: React.PropTypes.number,
         onIconDragEnd: React.PropTypes.func
     },
 
     getDefaultProps() {
         return {
-            iconWidth: 96,
-            iconHeight: 96,
+            iconSize: 96,
             containerCornersGap: 20,
             onIconDragEnd: utils.emptyFn()
         }
@@ -35,35 +34,42 @@ var ROSIconsGrid = React.createClass({
 
     getInitialState() {
         return {
-            mounted: false,
             cols: 0,
             rows: 0,
             width: 0,
-            height: 0
+            height: 0,
+            iconsPositions: []
         }
     },
 
-    responseNextZIndex(currentZIndex) {
+    getNextZIndex(currentZIndex) {
         if (currentZIndex == this.initialZIndex && this.initialZIndex > 1) {
             return currentZIndex;
         }
         return ++this.initialZIndex;
     },
 
+    getIconGridPosition(position) {
+        return {
+            top: this.calcGridTopByRow(position[1]),
+            left: this.calcGridLeftByCol(position[0])
+        }
+    },
+
     setInnerGridSize() {
         let gridNode = this.refs.grid;
         let gridNodeRect = gridNode.getBoundingClientRect();
 
-        let cols = Math.floor(gridNodeRect.width / this.props.iconWidth);
-        let rows = Math.floor(gridNodeRect.height / this.props.iconHeight);
+        let cols = Math.floor(gridNodeRect.width / this.props.iconSize);
+        let rows = Math.floor(gridNodeRect.height / this.props.iconSize);
 
         this.setState({
-            cols, rows, width: gridNodeRect.width, height: gridNodeRect.height, mounted: true
+            cols, rows, width: gridNodeRect.width, height: gridNodeRect.height
         });
     },
 
     calcGridRowByTop(top) {
-        let row = Math.ceil(Math.abs(this.state.height - (top + (this.props.iconHeight / 2) )) / this.props.iconHeight) || 1;
+        let row = Math.ceil(Math.abs(this.state.height - (top + (this.props.iconSize / 2) )) / this.props.iconSize) || 1;
         if (row > this.state.rows) {
             row = this.state.rows;
         }
@@ -72,7 +78,7 @@ var ROSIconsGrid = React.createClass({
     },
 
     calcGridColByLeft(left) {
-        let col = Math.ceil((left + this.props.iconWidth / 2) / this.props.iconWidth) || 1;
+        let col = Math.ceil((left + this.props.iconSize / 2) / this.props.iconSize) || 1;
         if (col > this.state.cols) {
             col = this.state.cols;
         }
@@ -81,17 +87,17 @@ var ROSIconsGrid = React.createClass({
     },
 
     calcGridTopByRow(row) {
-        return Math.abs(row * this.props.iconHeight - this.state.height);
+        return Math.abs(row * this.props.iconSize - this.state.height);
     },
 
     calcGridLeftByCol(col) {
-        return Math.abs(col * this.props.iconWidth - this.props.iconWidth);
+        return Math.abs(col * this.props.iconSize - this.props.iconSize);
     },
 
     findNextValidCol(current) {
-        if(current < 1) {
+        if (current < 1) {
             return 1;
-        } else if(current > this.state.cols) {
+        } else if (current > this.state.cols) {
             return this.state.cols;
         }
 
@@ -99,83 +105,98 @@ var ROSIconsGrid = React.createClass({
     },
 
     findNextValidRow(current) {
-        if(current < 1) {
+        if (current < 1) {
             return 1;
-        } else if(current > this.state.rows) {
+        } else if (current > this.state.rows) {
             return this.state.rows;
         }
 
         return current;
     },
 
-    getWrapperPositionByIndex(index, iconElement) {
-        index += 1;
-        let row, col;
+    getIconPosition(iconElement, index) {
+        let row, col, _col, _row;
 
-        if (iconElement && iconElement.props.position && iconElement.props.position instanceof Array) {
-            let _col = iconElement.props.position[0];
-            let _row = iconElement.props.position[1];
+        if (this.state.iconsPositions[index]) {
+            _col = this.state.iconsPositions[index][0];
+            _row = this.state.iconsPositions[index][1];
 
+        } else if (iconElement && iconElement.props.position && iconElement.props.position instanceof Array) {
+            _col = iconElement.props.position[0];
+            _row = iconElement.props.position[1];
+        }
+
+        if (_col && _row) {
             col = _col > 0 && _col <= this.state.cols ? _col : this.findNextValidCol(_col);
             row = _row > 0 && _row <= this.state.rows ? _row : this.findNextValidRow(_row);
         }
 
-        row = row || Math.ceil(index / this.state.cols);
-        col = col || Math.ceil(index % this.state.cols) || this.state.cols;
+        row = row || Math.ceil((index + 1) / this.state.cols);
+        col = col || Math.ceil((index + 1) % this.state.cols) || this.state.cols;
 
-        return {
-            top: this.calcGridTopByRow(row),
-            left: this.calcGridLeftByCol(col)
-        };
+        return [col, row];
+    },
+
+    cloneIconWithProps(child, index) {
+        let position = this.getIconPosition(child, index);
+
+        return React.cloneElement(child, {
+            containerNode: this.refs.grid,
+            width: this.props.iconSize,
+            height: this.props.iconSize,
+            position: position,
+            index: index,
+            handler: '.title',
+            resetPositionOnDrop: true,
+            onDrop: this.onIconDropComplete
+        });
     },
 
     getWrappedIcons() {
-        let children = React.Children.toArray(this.props.children);
-        let wrappedChildren = [];
-
-        children.forEach((child, idx)=> {
-            if (child.type.displayName == 'ROSIcon') {
-
-                let position = this.getWrapperPositionByIndex(idx, child);
-                let options = {
-                    containerNode: this.refs.grid
-                };
-
-                let Draggable = draggableConnector(ROSIconWrapper, options, {
-                    index: idx,
-                    width: this.props.iconWidth,
-                    height: this.props.iconHeight,
-                    top: position.top,
-                    left: position.left,
-                    children: child,
-                    onDrop: this.onDropComplete
-                });
-
-                wrappedChildren.push(<Draggable key={idx+1}/>);
+        return React.Children.map(this.props.children, function (child, index) {
+            if (child.type.displayName == 'Draggable') {
+                return this.cloneIconWithProps(child, index);
             }
-        });
-
-        return wrappedChildren;
+            return child;
+        }.bind(this));
     },
 
-    onDropComplete(draggable) {
-
-        let iconWrapper = draggable.getCompositeComponent();
-
-        let iconWrapperNode = ReactDOM.findDOMNode(iconWrapper);
-
-        let top = parseInt(iconWrapperNode.style.top);
-        let left = parseInt(iconWrapperNode.style.left);
+    onIconDropComplete(draggable, top, left) {
+        let icon = draggable.getCompositeComponent();
 
         let row = this.calcGridRowByTop(top);
         let col = this.calcGridColByLeft(left);
 
-        draggable.updateProps({
-            top: this.calcGridTopByRow(row),
-            left: this.calcGridLeftByCol(col)
+        let iconsPositions = this.state.iconsPositions.slice();
+        iconsPositions[icon.props.index] = [col, row];
+
+        this.setState({
+            iconsPositions: iconsPositions
         });
 
-        this.props.onIconDragEnd(iconWrapper.getCompositeComponent(), [col, row], iconWrapper.props.index);
+        this.props.onIconDragEnd(icon, [col, row], icon.props.index);
+    },
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if(!this.state.iconsPositions.length) {
+            return true;
+        }
+
+        for (var i = 0, len = this.state.iconsPositions.length; i < len; i++) {
+            if(this.state.iconsPositions[i] && (this.state.iconsPositions[i][0] != nextState.iconsPositions[i][0] || this.state.iconsPositions[i][1] != nextState.iconsPositions[i][1])) {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    arrangeIconsByName() {
+        console.log(1);
+    },
+
+    arrangeIconsByIndex() {
+
     },
 
     componentDidMount() {
@@ -206,7 +227,7 @@ var ROSIconsGrid = React.createClass({
         return (
             <div className="ros-icons-grid" style={classes.gridStyle}>
                 <div className="grid-holder" ref="grid">
-                    {this.props.children && this.state.mounted && this.getWrappedIcons()}
+                    {this.state.rows && this.state.cols && this.getWrappedIcons()}
                 </div>
             </div>
         );
